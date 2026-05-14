@@ -1,0 +1,22 @@
+{
+  "name": "roblox-discord-verification-bot",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "deploy-commands": "node src/deploy-commands.js",
+    "check": "node --check src/index.js && node --check src/deploy-commands.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.7",
+    "mongodb": "^6.12.0",
+    "zod": "^3.24.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
+
