@@ -11,7 +11,7 @@ npm run dev
 Register this Roblox OAuth callback URL:
 
 ```text
-https://YOUR_DOMAIN/api/auth/roblox/callback
+https://wolinrp.saauf.xyz/api/auth/roblox/callback
 ```
 
 Required Roblox OAuth scopes:
