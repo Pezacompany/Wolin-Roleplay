@@ -2,6 +2,8 @@ import { cookies } from "next/headers";
 import { getDb } from "../../lib/mongodb.js";
 import { verifySessionToken } from "../../lib/session-token.js";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   const cookieStore = await cookies();
   const token = cookieStore.get("verification_session")?.value;
