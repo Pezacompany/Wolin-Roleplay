@@ -1,0 +1,23 @@
+{
+  "name": "roblox-discord-verification-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "check": "node --check lib/env.js && node --check lib/mongodb.js && node --check lib/session-token.js && node --check lib/rate-limit.js"
+  },
+  "dependencies": {
+    "mongodb": "^6.12.0",
+    "next": "^15.1.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zod": "^3.24.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
+
