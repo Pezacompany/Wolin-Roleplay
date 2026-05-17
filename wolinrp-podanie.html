@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Podanie do Administracji – WolinRP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sea:   #0a1f3c;
+      --deep:  #060f1e;
+      --wave:  #1a4a6e;
+      --foam:  #c8e8f8;
+      --gold:  #d4a94a;
+      --gold2: #f0cc78;
+      --light: #eef4fa;
+      --muted: #8aaec7;
+      --white: #ffffff;
+      --card:  #0d2540;
+      --err:   #e05c5c;
+      --ok:    #4caf7d;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: var(--deep);
+      color: var(--light);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── BG ─── */
+    .page-bg {
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 70% 50% at 80% 20%, rgba(212,169,74,.06) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 60% at 10% 80%, rgba(26,74,110,.25) 0%, transparent 60%),
+        linear-gradient(180deg, #060f1e 0%, #0a1f3c 100%);
+    }
+    .grid-lines {
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(212,169,74,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(212,169,74,.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: relative; z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 60px;
+      border-bottom: 1px solid rgba(212,169,74,.18);
+      background: rgba(6,15,30,.7);
+      backdrop-filter: blur(14px);
+    }
+    .nav-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: var(--gold);
+      letter-spacing: 3px;
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--foam); }
+    .nav-back {
+      font-family: 'Cinzel', serif;
+      font-size: .78rem;
+      letter-spacing: 2px;
+      color: var(--muted);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color .2s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav-back:hover { color: var(--gold); }
+    .nav-back::before { content: '←'; font-size: 1rem; }
+
+    /* ─── MAIN ─── */
+    main {
+      position: relative; z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 64px 24px 100px;
+    }
+
+    /* ─── HEADER ─── */
+    .form-header {
+      text-align: center;
+      margin-bottom: 56px;
+      animation: fadeUp .7s .1s both;
+    }
+    .form-badge {
+      display: inline-block;
+      font-family: 'Cinzel', serif;
+      font-size: .7rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(212,169,74,.4);
+      padding: 6px 18px;
+      border-radius: 2px;
+      margin-bottom: 24px;
+    }
+    .form-header h1 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 900;
+      letter-spacing: 4px;
+      color: var(--white);
+      text-shadow: 0 0 40px rgba(212,169,74,.3);
+      margin-bottom: 16px;
+    }
+    .form-header p {
+      color: var(--muted);
+      font-size: .97rem;
+      line-height: 1.7;
+      max-width: 520px;
+      margin: 0 auto;
+      font-weight: 300;
+    }
+
+    /* ─── PROGRESS ─── */
+    .progress-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 48px;
+      animation: fadeUp .7s .2s both;
+    }
+    .prog-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+    }
+    .prog-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 18px;
+      left: calc(50% + 18px);
+      width: calc(100% - 0px);
+      height: 1px;
+      background: rgba(212,169,74,.2);
+      z-index: 0;
+    }
+    .prog-step[data-active="true"]:not(:last-child)::after { background: rgba(212,169,74,.5); }
+    .prog-dot {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 2px solid rgba(212,169,74,.25);
+      background: var(--card);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cinzel', serif;
+      font-size: .78rem;
+      color: var(--muted);
+      z-index: 1;
+      transition: all .3s;
+    }
+    .prog-step[data-active="true"] .prog-dot {
+      border-color: var(--gold);
+      background: rgba(212,169,74,.15);
+      color: var(--gold);
+      box-shadow: 0 0 16px rgba(212,169,74,.3);
+    }
+    .prog-step[data-done="true"] .prog-dot {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--deep);
+      font-size: 1rem;
+    }
+    .prog-label {
+      font-size: .68rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: 'Cinzel', serif;
+      white-space: nowrap;
+    }
+    .prog-step[data-active="true"] .prog-label { color: var(--gold); }
+    .prog-connector {
+      width: 80px; height: 1px;
+      background: rgba(212,169,74,.2);
+      margin-bottom: 28px;
+      flex-shrink: 0;
+      transition: background .3s;
+    }
+    .prog-connector.done { background: rgba(212,169,74,.55); }
+
+    /* ─── CARD ─── */
+    .form-card {
+      background: var(--card);
+      border: 1px solid rgba(212,169,74,.15);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,.5);
+      animation: fadeUp .7s .3s both;
+    }
+    .card-top {
+      background: linear-gradient(90deg, rgba(212,169,74,.12) 0%, transparent 100%);
+      border-bottom: 1px solid rgba(212,169,74,.15);
+      padding: 24px 36px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .card-top-icon {
+      width: 40px; height: 40px;
+      background: rgba(212,169,74,.15);
+      border: 1px solid rgba(212,169,74,.3);
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .card-top h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      color: var(--gold);
+      letter-spacing: 1.5px;
+    }
+    .card-top p { font-size: .82rem; color: var(--muted); margin-top: 2px; }
+
+    /* ─── FORM STEPS ─── */
+    .form-step { display: none; padding: 36px; }
+    .form-step.active { display: block; animation: stepIn .4s ease; }
+    @keyframes stepIn {
+      from { opacity: 0; transform: translateX(18px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ─── FIELDS ─── */
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .field { margin-bottom: 24px; }
+    .field label {
+      display: block;
+      font-family: 'Cinzel', serif;
+      font-size: .75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    .field label span { color: var(--err); margin-left: 3px; }
+    .field .hint {
+      font-size: .78rem;
+      color: var(--muted);
+      margin-top: -6px;
+      margin-bottom: 10px;
+      font-style: italic;
+    }
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      background: rgba(10,31,60,.8);
+      border: 1px solid rgba(212,169,74,.2);
+      border-radius: 3px;
+      padding: 13px 16px;
+      color: var(--light);
+      font-family: 'Lato', sans-serif;
+      font-size: .95rem;
+      outline: none;
+      transition: border-color .25s, box-shadow .25s;
+      appearance: none;
+    }
+    .field input::placeholder,
+    .field textarea::placeholder { color: rgba(138,174,199,.4); }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(212,169,74,.1);
+    }
+    .field input.invalid,
+    .field select.invalid,
+    .field textarea.invalid {
+      border-color: var(--err);
+      box-shadow: 0 0 0 3px rgba(224,92,92,.1);
+    }
+    .field textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
+    .field select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23d4a94a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 40px;
+      cursor: pointer;
+    }
+    .field select option { background: var(--sea); }
+    .field-err { font-size: .78rem; color: var(--err); margin-top: 6px; display: none; }
+    .field input.invalid ~ .field-err,
+    .field select.invalid ~ .field-err,
+    .field textarea.invalid ~ .field-err { display: block; }
+
+    /* radio groups */
+    .radio-group { display: flex; flex-direction: column; gap: 10px; }
+    .radio-opt {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(10,31,60,.6);
+      border: 1px solid rgba(212,169,74,.15);
+      border-radius: 3px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+    .radio-opt:hover { border-color: rgba(212,169,74,.4); background: rgba(26,74,110,.3); }
+    .radio-opt input[type=radio] { display: none; }
+    .radio-custom {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 2px solid rgba(212,169,74,.4);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color .2s;
+    }
+    .radio-opt:has(input:checked) {
+      border-color: rgba(212,169,74,.6);
+      background: rgba(212,169,74,.08);
+    }
+    .radio-opt:has(input:checked) .radio-custom {
+      border-color: var(--gold);
+    }
+    .radio-opt:has(input:checked) .radio-custom::after {
+      content: '';
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+    .radio-label { font-size: .92rem; color: var(--foam); }
+
+    /* range */
+    .range-wrap { display: flex; align-items: center; gap: 16px; }
+    .field input[type=range] {
+      flex: 1;
+      padding: 0;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      cursor: pointer;
+      accent-color: var(--gold);
+    }
+    .range-val {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      color: var(--gold);
+      min-width: 30px;
+      text-align: right;
+    }
+
+    /* ─── DIVIDER ─── */
+    .field-divider {
+      border: none;
+      border-top: 1px solid rgba(212,169,74,.12);
+      margin: 8px 0 24px;
+    }
+    .section-sub {
+      font-family: 'Cinzel', serif;
+      font-size: .78rem;
+      letter-spacing: 3px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(212,169,74,.1);
+    }
+
+    /* ─── BUTTONS ─── */
+    .btn-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(212,169,74,.1);
+    }
+    .btn {
+      font-family: 'Cinzel', serif;
+      font-size: .8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 13px 32px;
+      border-radius: 3px;
+      border: none;
+      cursor: pointer;
+      transition: all .25s;
+      outline: none;
+    }
+    .btn-next {
+      background: var(--gold);
+      color: var(--deep);
+      font-weight: 700;
+    }
+    .btn-next:hover { background: var(--gold2); transform: translateY(-1px); }
+    .btn-prev {
+      background: transparent;
+      border: 1px solid rgba(212,169,74,.3);
+      color: var(--muted);
+    }
+    .btn-prev:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-submit {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 100%);
+      color: var(--deep);
+      font-weight: 700;
+      padding: 15px 40px;
+      font-size: .85rem;
+    }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212,169,74,.3); }
+    .btn-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .btn-ghost { background: none; border: none; cursor: pointer; color: var(--muted); font-size: .82rem; font-family: 'Lato', sans-serif; }
+
+    /* ─── SUMMARY ─── */
+    .summary { padding: 36px; }
+    .summary h3 {
+      font-family: 'Cinzel', serif;
+      color: var(--gold);
+      letter-spacing: 2px;
+      margin-bottom: 24px;
+      font-size: .9rem;
+      text-transform: uppercase;
+    }
+    .summary-row {
+      display: flex;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(212,169,74,.08);
+      font-size: .92rem;
+    }
+    .summary-key { color: var(--muted); min-width: 200px; flex-shrink: 0; }
+    .summary-val { color: var(--foam); word-break: break-word; }
+
+    /* ─── TOAST / STATUS ─── */
+    .toast {
+      position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: var(--card);
+      border: 1px solid rgba(212,169,74,.3);
+      border-radius: 4px;
+      padding: 16px 28px;
+      font-family: 'Cinzel', serif;
+      font-size: .82rem;
+      letter-spacing: 1px;
+      color: var(--gold);
+      box-shadow: 0 12px 40px rgba(0,0,0,.5);
+      z-index: 999;
+      transition: transform .4s cubic-bezier(.34,1.56,.64,1);
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.error { border-color: rgba(224,92,92,.4); color: var(--err); }
+    .toast.success { border-color: rgba(76,175,125,.4); color: var(--ok); }
+
+    /* ─── SUCCESS SCREEN ─── */
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 60px 36px;
+      animation: fadeUp .6s both;
+    }
+    .success-screen.active { display: block; }
+    .success-icon {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: rgba(76,175,125,.15);
+      border: 2px solid rgba(76,175,125,.4);
+      margin: 0 auto 28px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      animation: pop .5s .2s both;
+    }
+    @keyframes pop {
+      from { transform: scale(.5); opacity: 0; }
+      to   { transform: scale(1);  opacity: 1; }
+    }
+    .success-screen h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.6rem;
+      color: var(--white);
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+    }
+    .success-screen p { color: var(--muted); line-height: 1.8; max-width: 400px; margin: 0 auto 32px; }
+    .success-screen a {
+      display: inline-block;
+      font-family: 'Cinzel', serif;
+      font-size: .78rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(212,169,74,.3);
+      padding: 12px 28px;
+      border-radius: 3px;
+      text-decoration: none;
+      transition: all .2s;
+    }
+    .success-screen a:hover { border-color: var(--gold); background: rgba(212,169,74,.08); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── WEBHOOK CONFIG ─── */
+    .webhook-bar {
+      max-width: 780px;
+      margin: 0 auto 0;
+      padding: 0 24px;
+      position: relative; z-index: 1;
+    }
+    .webhook-toggle {
+      display: flex; align-items: center; gap: 10px;
+      font-size: .8rem; color: var(--muted);
+      cursor: pointer; width: fit-content;
+      margin-bottom: 10px;
+      font-family: 'Cinzel', serif;
+      letter-spacing: 1px;
+    }
+    .webhook-toggle::before { content: '⚙'; font-size: .9rem; color: var(--gold); }
+    .webhook-input-wrap { display: none; margin-bottom: 20px; }
+    .webhook-input-wrap.open { display: flex; gap: 12px; }
+    .webhook-input-wrap input {
+      flex: 1;
+      background: rgba(10,31,60,.8);
+      border: 1px solid rgba(212,169,74,.2);
+      border-radius: 3px;
+      padding: 10px 14px;
+      color: var(--light);
+      font-family: 'Lato', sans-serif;
+      font-size: .85rem;
+      outline: none;
+    }
+    .webhook-input-wrap input:focus { border-color: var(--gold); }
+    .webhook-input-wrap button {
+      font-family: 'Cinzel', serif;
+      font-size: .72rem;
+      letter-spacing: 1.5px;
+      background: rgba(212,169,74,.15);
+      border: 1px solid rgba(212,169,74,.3);
+      color: var(--gold);
+      padding: 10px 20px;
+      border-radius: 3px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .2s;
+    }
+    .webhook-input-wrap button:hover { background: rgba(212,169,74,.25); }
+
+    @media (max-width: 640px) {
+      nav { padding: 16px 20px; }
+      .field-row { grid-template-columns: 1fr; }
+      .form-step, .summary { padding: 24px 20px; }
+      .card-top { padding: 18px 20px; }
+      .btn-row { flex-direction: column-reverse; gap: 12px; align-items: stretch; text-align: center; }
+      .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-bg"></div>
+<div class="grid-lines"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="wolinrp.html"><span>Wolin</span>RP</a>
+  <a class="nav-back" href="wolinrp.html">Strona główna</a>
+</nav>
+
+
+<main>
+  <!-- HEADER -->
+  <div class="form-header">
+    <div class="form-badge">Administracja</div>
+    <h1>Podanie do Adminstracji</h1>
+    <p>Wypełnij formularz starannie i zgodnie z prawdą. Podania są rozpatrywane przez nasz zespół w ciągu 72 godzin.</p>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap" id="progressBar">
+    <div class="prog-step" data-active="true" id="ps1">
+      <div class="prog-dot">1</div>
+      <div class="prog-label">Tożsamość</div>
+    </div>
+    <div class="prog-connector" id="pc1"></div>
+    <div class="prog-step" id="ps2">
+      <div class="prog-dot">2</div>
+      <div class="prog-label">Postać RP</div>
+    </div>
+    <div class="prog-connector" id="pc2"></div>
+    <div class="prog-step" id="ps3">
+      <div class="prog-dot">3</div>
+      <div class="prog-label">Motywacja</div>
+    </div>
+    <div class="prog-connector" id="pc3"></div>
+    <div class="prog-step" id="ps4">
+      <div class="prog-dot">4</div>
+      <div class="prog-label">Podsumowanie</div>
+    </div>
+  </div>
+
+  <!-- FORM CARD -->
+  <div class="form-card" id="formCard">
+
+    <!-- ─── STEP 1 – TOŻSAMOŚĆ ─── -->
+    <div class="form-step active" id="step1">
+      <div class="card-top">
+        <div class="card-top-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        </div>
+        <div>
+          <h2>Dane tożsamości</h2>
+          <p>Twoje konta Discord i Roblox</p>
+        </div>
+      </div>
+      <div style="padding:36px">
+        <div class="section-sub">Discord</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Nick Discord <span>*</span></label>
+            <p class="hint">np. jankowalski lub jankowalski#1234</p>
+            <input type="text" id="discordNick" placeholder="TwójNick" />
+            <div class="field-err">Podaj swój nick na Discordzie.</div>
+          </div>
+          <div class="field">
+            <label>ID Discord <span>*</span></label>
+            <p class="hint">18-cyfrowy numer (Ustawienia → O mnie)</p>
+            <input type="text" id="discordId" placeholder="123456789012345678" maxlength="20" />
+            <div class="field-err">Podaj poprawne ID Discorda (min. 17 cyfr).</div>
+          </div>
+        </div>
+
+        <hr class="field-divider" />
+        <div class="section-sub">Roblox</div>
+        <div class="field-row">
+          <div class="field">
+            <label>Nick Roblox <span>*</span></label>
+            <p class="hint">Twoja nazwa użytkownika na Robloxie</p>
+            <input type="text" id="robloxNick" placeholder="TwójNick_Roblox" />
+            <div class="field-err">Podaj swój nick na Robloxie.</div>
+          </div>
+          <div class="field">
+            <label>ID Roblox <span>*</span></label>
+            <p class="hint">Widoczne w adresie profilu: /users/TUTAJ/profile</p>
+            <input type="text" id="robloxId" placeholder="12345678" maxlength="12" />
+            <div class="field-err">Podaj poprawne ID Roblox (same cyfry).</div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <span></span>
+          <button class="btn btn-next" onclick="nextStep(1)">Dalej →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── STEP 2 – POSTAĆ RP ─── -->
+    <div class="form-step" id="step2">
+      <div class="card-top">
+        <div class="card-top-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 1 0 0 10A5 5 0 0 0 12 2z"/><path d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6"/><circle cx="19" cy="8" r="3"/><path d="M19 5v6M16 8h6"/></svg>
+        </div>
+        <div>
+          <h2>Postać w RP</h2>
+          <p>Informacje o Twojej roli na serwerze</p>
+        </div>
+      </div>
+      <div style="padding:36px">
+        <div class="field-row">
+          <div class="field">
+            <label>Imię i nazwisko postaci <span>*</span></label>
+            <input type="text" id="rpName" placeholder="Jan Kowalski" />
+            <div class="field-err">Podaj imię i nazwisko postaci.</div>
+          </div>
+          <div class="field">
+            <label>Wiek postaci <span>*</span></label>
+            <input type="number" id="rpAge" placeholder="25" min="18" max="80" />
+            <div class="field-err">Podaj wiek (18–80).</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Aktualna funkcja / frakcja w RP <span>*</span></label>
+          <p class="hint">Wpisz np. Policja, Straż Pożarna, Cywil itp.</p>
+          <input type="text" id="rpRole" placeholder="np. Policja (KPP Wolin)" />
+          <div class="field-err">Podaj swoją funkcję/frakcję.</div>
+        </div>
+
+        <div class="field">
+          <label>Jak długo grasz na WolinRP? <span>*</span></label>
+          <select id="rpTime">
+            <option value="">— Wybierz —</option>
+            <option>Mniej niż miesiąc</option>
+            <option>1–3 miesiące</option>
+            <option>3–6 miesięcy</option>
+            <option>Ponad pół roku</option>
+            <option>Ponad rok</option>
+          </select>
+          <div class="field-err">Wybierz staż na serwerze.</div>
+        </div>
+
+        <div class="field">
+          <label>Ile masz lat? <span>*</span></label>
+          <div class="radio-group">
+            <label class="radio-opt"><input type="radio" name="ageReal" value="13–15" /><div class="radio-custom"></div><span class="radio-label">13–15 lat</span></label>
+            <label class="radio-opt"><input type="radio" name="ageReal" value="16–17" /><div class="radio-custom"></div><span class="radio-label">16–17 lat</span></label>
+            <label class="radio-opt"><input type="radio" name="ageReal" value="18+" /><div class="radio-custom"></div><span class="radio-label">18 lat i więcej</span></label>
+          </div>
+          <div class="field-err" id="ageErr">Wybierz przedział wiekowy.</div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-prev" onclick="prevStep(2)">← Wróć</button>
+          <button class="btn btn-next" onclick="nextStep(2)">Dalej →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── STEP 3 – MOTYWACJA ─── -->
+    <div class="form-step" id="step3">
+      <div class="card-top">
+        <div class="card-top-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <div>
+          <h2>Motywacja &amp; Kompetencje</h2>
+          <p>Powiedz nam czegoś o sobie</p>
+        </div>
+      </div>
+      <div style="padding:36px">
+
+        <div class="field">
+          <label>Dlaczego chcesz dołączyć do administracji? <span>*</span></label>
+          <p class="hint">Minimum 100 znaków. Napisz szczerze i konkretnie.</p>
+          <textarea id="motivation" placeholder="Chcę dołączyć do administracji WolinRP ponieważ..." style="min-height:130px"></textarea>
+          <div class="field-err">Napisz motywację (min. 100 znaków).</div>
+        </div>
+
+        <div class="field">
+          <label>Twoje doświadczenie w administracji (inne serwery, projekty)</label>
+          <textarea id="experience" placeholder="Byłem adminem na serwerze XYZ przez 6 miesięcy..." style="min-height:90px"></textarea>
+        </div>
+
+        <div class="field">
+          <label>Ile czasu tygodniowo nam poświęcisz? <span>*</span></label>
+          <p class="hint">Przesuń suwak — im więcej, tym lepiej.</p>
+          <div class="range-wrap">
+            <input type="range" id="availability" min="0" max="26" value="0" oninput="updateCzas(this.value)" />
+            <div class="range-val" id="availVal" style="min-width:110px;font-size:.95rem;">Mniej niż 1h</div>
+          </div>
+          <div id="czasLabel" style="margin-top:8px;font-size:.82rem;color:var(--muted);font-style:italic;"></div>
+        </div>
+
+        <div class="field">
+          <label>Czy byłeś kiedyś banowany na WolinRP? <span>*</span></label>
+          <div class="radio-group">
+            <label class="radio-opt"><input type="radio" name="banned" value="Nie" /><div class="radio-custom"></div><span class="radio-label">Nie, nigdy</span></label>
+            <label class="radio-opt"><input type="radio" name="banned" value="Tak, ale zostałem odbanowany" /><div class="radio-custom"></div><span class="radio-label">Tak, ale zostałem odbanowany</span></label>
+            <label class="radio-opt"><input type="radio" name="banned" value="Tak, aktualnie zbanowany" /><div class="radio-custom"></div><span class="radio-label">Tak, aktualnie jestem zbanowany</span></label>
+          </div>
+          <div class="field-err" id="bannedErr">Wybierz odpowiedź.</div>
+        </div>
+
+        <div class="field">
+          <label>Dodatkowe informacje / coś o sobie</label>
+          <textarea id="extra" placeholder="Cokolwiek, co chcesz nam powiedzieć..." style="min-height:80px"></textarea>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-prev" onclick="prevStep(3)">← Wróć</button>
+          <button class="btn btn-next" onclick="nextStep(3)">Podgląd podania →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── STEP 4 – SUMMARY ─── -->
+    <div class="form-step" id="step4">
+      <div class="card-top">
+        <div class="card-top-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <div>
+          <h2>Podsumowanie podania</h2>
+          <p>Sprawdź dane przed wysłaniem</p>
+        </div>
+      </div>
+      <div class="summary" id="summaryContent"></div>
+      <div style="padding:0 36px 36px">
+        <div class="btn-row">
+          <button class="btn btn-prev" onclick="prevStep(4)">← Popraw</button>
+          <button class="btn btn-submit" id="submitBtn" onclick="submitForm()">Wyślij podanie</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SUCCESS ─── -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">✓</div>
+      <h2>Podanie wysłane!</h2>
+      <p>Twoje podanie zostało pomyślnie przesłane do administracji WolinRP. Odpowiedź otrzymasz w ciągu 72 godzin na Discordzie.</p>
+      <a href="wolinrp.html">← Powrót do strony głównej</a>
+    </div>
+
+  </div><!-- /form-card -->
+</main>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ─── CZAS ───
+  function getCzasLabel(val) {
+    val = parseInt(val);
+    if (val === 0)  return 'Mniej niż 1h tygodniowo';
+    if (val <= 25)  return val + 'h tygodniowo';
+    return 'Ponad 25h tygodniowo';
+  }
+  function updateCzas(val) {
+    document.getElementById('availVal').textContent = getCzasLabel(val);
+  }
+
+  // ─── WEBHOOK ───
+const WEBHOOK_URL = 'https://discord.com/api/webhooks/1505613725732962604/D66Bs1QXegegFil1B08hNg_CmilUYXVrxuIvbQ0JiAdp-ADG_LiSZzJJCOSKKQ_FNdJg';
+
+  function toggleWebhook() {
+    const w = document.getElementById('webhookWrap');
+    w.classList.toggle('open');
+    if (w.classList.contains('open')) {
+      document.getElementById('webhookUrl').value = WEBHOOK_URL;
+    }
+  }
+  function saveWebhook() {
+    WEBHOOK_URL = document.getElementById('webhookUrl').value.trim();
+    localStorage.setItem('wolinrp_webhook', WEBHOOK_URL);
+    document.getElementById('webhookWrap').classList.remove('open');
+    showToast('Webhook zapisany ✓', 'success');
+  }
+
+  // ─── TOAST ───
+  let toastTimer;
+  function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type + ' show';
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  // ─── PROGRESS ───
+  let currentStep = 1;
+  const TOTAL = 4;
+
+  function updateProgress(step) {
+    for (let i = 1; i <= TOTAL; i++) {
+      const ps = document.getElementById('ps' + i);
+      ps.removeAttribute('data-active');
+      ps.removeAttribute('data-done');
+      if (i < step) { ps.setAttribute('data-done', 'true'); ps.querySelector('.prog-dot').textContent = '✓'; }
+      else if (i === step) { ps.setAttribute('data-active', 'true'); ps.querySelector('.prog-dot').textContent = i; }
+      else { ps.querySelector('.prog-dot').textContent = i; }
+    }
+    for (let i = 1; i < TOTAL; i++) {
+      const pc = document.getElementById('pc' + i);
+      if (pc) pc.className = 'prog-connector' + (i < step ? ' done' : '');
+    }
+  }
+
+  function goStep(n) {
+    document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+    document.getElementById('step' + n).classList.add('active');
+    currentStep = n;
+    updateProgress(n);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ─── VALIDATION ───
+  function markField(el, ok) {
+    el.classList.toggle('invalid', !ok);
+    return ok;
+  }
+
+  function getRadio(name) {
+    const checked = document.querySelector(`input[name="${name}"]:checked`);
+    return checked ? checked.value : '';
+  }
+
+  function validateStep(step) {
+    let valid = true;
+
+    if (step === 1) {
+      valid &= markField(document.getElementById('discordNick'), document.getElementById('discordNick').value.trim().length > 1);
+      const dId = document.getElementById('discordId').value.trim();
+      valid &= markField(document.getElementById('discordId'), /^\d{17,20}$/.test(dId));
+      valid &= markField(document.getElementById('robloxNick'), document.getElementById('robloxNick').value.trim().length > 1);
+      const rId = document.getElementById('robloxId').value.trim();
+      valid &= markField(document.getElementById('robloxId'), /^\d{5,12}$/.test(rId));
+    }
+
+    if (step === 2) {
+      valid &= markField(document.getElementById('rpName'), document.getElementById('rpName').value.trim().length > 2);
+      const age = parseInt(document.getElementById('rpAge').value);
+      valid &= markField(document.getElementById('rpAge'), age >= 18 && age <= 80);
+      valid &= markField(document.getElementById('rpRole'), document.getElementById('rpRole').value.trim().length > 1);
+      valid &= markField(document.getElementById('rpTime'), document.getElementById('rpTime').value !== '');
+      const ageOk = !!getRadio('ageReal');
+      document.getElementById('ageErr').style.display = ageOk ? 'none' : 'block';
+      valid &= ageOk;
+    }
+
+    if (step === 3) {
+      const mot = document.getElementById('motivation').value.trim();
+      valid &= markField(document.getElementById('motivation'), mot.length >= 100);
+      const bannedOk = !!getRadio('banned');
+      document.getElementById('bannedErr').style.display = bannedOk ? 'none' : 'block';
+      valid &= bannedOk;
+    }
+
+    return !!valid;
+  }
+
+  function nextStep(from) {
+    if (!validateStep(from)) { showToast('Uzupełnij wymagane pola!', 'error'); return; }
+    if (from === 3) buildSummary();
+    goStep(from + 1);
+  }
+  function prevStep(from) { goStep(from - 1); }
+
+  // ─── SUMMARY ───
+  function buildSummary() {
+    const rows = [
+      ['Nick Discord', document.getElementById('discordNick').value],
+      ['ID Discord', document.getElementById('discordId').value],
+      ['Nick Roblox', document.getElementById('robloxNick').value],
+      ['ID Roblox', document.getElementById('robloxId').value],
+      ['Imię i nazwisko postaci', document.getElementById('rpName').value],
+      ['Wiek postaci (RP)', document.getElementById('rpAge').value + ' lat'],
+      ['Funkcja / frakcja', document.getElementById('rpRole').value],
+      ['Staż na WolinRP', document.getElementById('rpTime').value],
+      ['Wiek rzeczywisty', getRadio('ageReal')],
+      ['Czas tygodniowo', getCzasLabel(document.getElementById('availability').value)],
+      ['Banowany na WolinRP', getRadio('banned')],
+      ['Motywacja', document.getElementById('motivation').value],
+      ['Doświadczenie', document.getElementById('experience').value || '—'],
+      ['Dodatkowe info', document.getElementById('extra').value || '—'],
+    ];
+    const container = document.getElementById('summaryContent');
+    container.innerHTML = '<h3>Twoje podanie</h3>' + rows.map(([k,v]) =>
+      `<div class="summary-row"><span class="summary-key">${k}</span><span class="summary-val">${v}</span></div>`
+    ).join('');
+  }
+
+  // ─── SUBMIT ───
+  async function submitForm() {
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Wysyłanie...';
+
+    const data = {
+      discordNick: document.getElementById('discordNick').value,
+      discordId:   document.getElementById('discordId').value,
+      robloxNick:  document.getElementById('robloxNick').value,
+      robloxId:    document.getElementById('robloxId').value,
+      rpName:      document.getElementById('rpName').value,
+      rpAge:       document.getElementById('rpAge').value,
+      rpRole:      document.getElementById('rpRole').value,
+      rpTime:      document.getElementById('rpTime').value,
+      ageReal:     getRadio('ageReal'),
+      motivation:  document.getElementById('motivation').value,
+      experience:  document.getElementById('experience').value || '—',
+      wodka: getCzasLabel(document.getElementById('availability').value),
+      banned:      getRadio('banned'),
+      extra:       document.getElementById('extra').value || '—',
+    };
+
+    const embed = {
+      embeds: [{
+        title: '📋 Nowe podanie do Administracji – WolinRP',
+        color: 0xD4A94A,
+        thumbnail: { url: 'https://i.imgur.com/AfFp7pu.png' },
+        fields: [
+          { name: 'Discord', value: `**${data.discordNick}**\n\`${data.discordId}\``, inline: true },
+          { name: 'Roblox', value: `**${data.robloxNick}**\n\`${data.robloxId}\``, inline: true },
+          { name: '\u200b', value: '\u200b', inline: false },
+          { name: 'Postac RP', value: `${data.rpName}, ${data.rpAge} lat`, inline: true },
+          { name: 'Frakcja / Rola', value: data.rpRole, inline: true },
+          { name: 'Staz na serwerze', value: data.rpTime, inline: true },
+          { name: 'Czas tygodniowo', value: data.wodka, inline: true },
+          { name: 'Wiek', value: data.ageReal, inline: true },
+          { name: 'Banowany?', value: data.banned, inline: true },
+          { name: 'Motywacja', value: data.motivation.slice(0, 1000) + (data.motivation.length > 1000 ? '...' : '') },
+          { name: 'Doswiadczenie', value: data.experience.slice(0, 500) },
+          { name: 'Dodatkowe info', value: data.extra.slice(0, 300) },
+        ],
+        footer: { text: 'WolinRP • Podanie złożone ' + new Date().toLocaleString('pl-PL') },
+        color: 0xD4A94A,
+      }]
+    };
+
+    if (!WEBHOOK_URL) {
+      // Simulate success if no webhook configured
+      await new Promise(r => setTimeout(r, 1000));
+      showSuccess();
+      return;
+    }
+
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(embed),
+      });
+      if (res.ok || res.status === 204) {
+        showSuccess();
+      } else {
+        throw new Error('HTTP ' + res.status);
+      }
+    } catch (e) {
+      btn.disabled = false;
+      btn.textContent = '⚓ Wyślij podanie';
+      showToast('Błąd wysyłania! Sprawdź URL webhooka.', 'error');
+    }
+  }
+
+  function showSuccess() {
+    document.getElementById('formCard').innerHTML = '';
+    document.getElementById('formCard').appendChild(
+      Object.assign(document.getElementById('successScreen') || document.createElement('div'))
+    );
+    // replace card content
+    const card = document.getElementById('formCard');
+    card.innerHTML = document.getElementById('successScreen').outerHTML;
+    card.querySelector('.success-screen').classList.add('active');
+    document.getElementById('progressBar').style.display = 'none';
+    updateProgress(5);
+  }
+</script>
+</body>
+</html>
