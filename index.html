@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+  <meta name="description" content="WolinRP – serwer roleplay na Robloxie osadzony w klimacie nadmorskiego Wolina. Dołącz do nas i przeżyj wyjątkową przygodę!" />
+  <meta name="keywords" content="wolin,roleplay,rp,role,play,wolinrp,voice chat,polski,serwer,roblox" />
+  <title>Strona Główna – WolinRP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sea:    #0a1f3c;
+      --deep:   #060f1e;
+      --wave:   #1a4a6e;
+      --foam:   #c8e8f8;
+      --gold:   #d4a94a;
+      --gold2:  #f0cc78;
+      --light:  #eef4fa;
+      --muted:  #8aaec7;
+      --white:  #ffffff;
+      --card:   #0d2540;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: var(--deep);
+      color: var(--light);
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 60px;
+      background: rgba(6,15,30,.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(212,169,74,.25);
+    }
+    .nav-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--gold);
+      letter-spacing: 3px;
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--foam); }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      color: var(--foam);
+      text-decoration: none;
+      font-size: .92rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 700;
+      transition: color .25s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      padding: 120px 24px 80px;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 100%, rgba(26,74,110,.7) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 20% 20%, rgba(212,169,74,.08) 0%, transparent 60%),
+        linear-gradient(180deg, #060f1e 0%, #0a1f3c 60%, #0d2e50 100%);
+      z-index: 0;
+    }
+    /* animated wave lines */
+    .waves {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 180px;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .waves svg { width: 200%; animation: waveSlide 10s linear infinite; }
+    @keyframes waveSlide { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    .hero-content { position: relative; z-index: 2; }
+    .hero-badge {
+      display: inline-block;
+      font-family: 'Cinzel', serif;
+      font-size: .75rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      padding: 6px 20px;
+      border-radius: 2px;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp .8s .2s forwards;
+    }
+    .hero h1 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(3rem, 9vw, 7rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--white);
+      text-shadow: 0 0 60px rgba(212,169,74,.4);
+      opacity: 0;
+      animation: fadeUp .9s .4s forwards;
+    }
+    .hero h1 span { color: var(--gold); }
+    .hero-sub {
+      margin: 28px auto 48px;
+      max-width: 560px;
+      font-size: 1.1rem;
+      color: var(--muted);
+      line-height: 1.7;
+      font-weight: 300;
+      opacity: 0;
+      animation: fadeUp .9s .6s forwards;
+    }
+    .hero-cta {
+      display: inline-block;
+      font-family: 'Cinzel', serif;
+      font-size: .9rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      background: var(--gold);
+      color: var(--deep);
+      padding: 16px 44px;
+      border-radius: 2px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: background .25s, transform .2s;
+      opacity: 0;
+      animation: fadeUp .9s .8s forwards;
+    }
+    .hero-cta:hover { background: var(--gold2); transform: translateY(-2px); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── SECTION WRAPPER ─── */
+    section { padding: 100px 24px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-family: 'Cinzel', serif;
+      font-size: .72rem;
+      letter-spacing: 5px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 20px;
+    }
+    .divider {
+      width: 60px; height: 3px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      margin-bottom: 48px;
+    }
+
+    /* ─── ABOUT ─── */
+    .about { background: var(--sea); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .about-text p {
+      color: var(--muted);
+      line-height: 1.9;
+      font-size: 1rem;
+      margin-bottom: 16px;
+    }
+    .about-img {
+      border-radius: 4px;
+      overflow: hidden;
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, var(--wave) 0%, var(--deep) 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      color: var(--gold);
+      letter-spacing: 2px;
+      border: 1px solid rgba(212,169,74,.2);
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    }
+    .about-img::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4a94a' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    /* ─── HOW TO PLAY ─── */
+    .how { background: var(--deep); }
+    .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 0; }
+    .step {
+      background: var(--card);
+      border: 1px solid rgba(212,169,74,.15);
+      border-radius: 4px;
+      padding: 40px 32px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .3s, transform .3s;
+    }
+    .step:hover { border-color: rgba(212,169,74,.5); transform: translateY(-6px); }
+    .step-num {
+      font-family: 'Cinzel', serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: rgba(212,169,74,.12);
+      position: absolute;
+      top: 12px; right: 20px;
+      line-height: 1;
+    }
+    .step-icon {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--wave) 100%);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 24px;
+    }
+    .step h4 {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      color: var(--gold);
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+    .step p { color: var(--muted); font-size: .93rem; line-height: 1.7; }
+
+    /* ─── FAQ ─── */
+    .faq-section { background: var(--sea); }
+    .faq-grid { display: flex; flex-direction: column; gap: 16px; }
+    .faq-item {
+      background: var(--card);
+      border: 1px solid rgba(212,169,74,.12);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .faq-q {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 28px;
+      cursor: pointer;
+      font-family: 'Cinzel', serif;
+      font-size: .95rem;
+      color: var(--foam);
+      letter-spacing: .5px;
+      user-select: none;
+    }
+    .faq-q::after { content: '+'; font-size: 1.4rem; color: var(--gold); transition: transform .3s; }
+    .faq-item.open .faq-q::after { transform: rotate(45deg); }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .4s ease, padding .3s;
+      padding: 0 28px;
+      color: var(--muted);
+      font-size: .93rem;
+      line-height: 1.8;
+    }
+    .faq-item.open .faq-a { max-height: 300px; padding: 0 28px 22px; }
+
+    /* ─── BENEFITS ─── */
+    .benefits { background: var(--deep); }
+    .benefits-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+    .benefit {
+      background: var(--card);
+      border: 1px solid rgba(212,169,74,.12);
+      border-radius: 4px;
+      padding: 36px 28px;
+      transition: border-color .3s;
+    }
+    .benefit:hover { border-color: rgba(212,169,74,.4); }
+    .benefit-icon { font-size: 2rem; margin-bottom: 20px; }
+    .benefit h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      color: var(--gold);
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+    }
+    .benefit p { color: var(--muted); font-size: .92rem; line-height: 1.7; }
+
+    /* ─── STATS ─── */
+    .stats-bar {
+      background: linear-gradient(135deg, var(--wave) 0%, var(--sea) 100%);
+      padding: 70px 24px;
+      border-top: 1px solid rgba(212,169,74,.2);
+      border-bottom: 1px solid rgba(212,169,74,.2);
+    }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; gap: 20px; }
+    .stat-num {
+      font-family: 'Cinzel', serif;
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--gold);
+    }
+    .stat-label { color: var(--muted); font-size: .85rem; letter-spacing: 2px; text-transform: uppercase; margin-top: 6px; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--deep);
+      border-top: 1px solid rgba(212,169,74,.15);
+      padding: 60px 24px 32px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      max-width: 1100px;
+      margin: 0 auto 48px;
+    }
+    .footer-brand p {
+      color: var(--muted);
+      font-size: .88rem;
+      line-height: 1.7;
+      margin-top: 12px;
+      max-width: 260px;
+    }
+    footer h5 {
+      font-family: 'Cinzel', serif;
+      font-size: .8rem;
+      letter-spacing: 3px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    footer ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    footer ul a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .9rem;
+      transition: color .2s;
+    }
+    footer ul a:hover { color: var(--foam); }
+    .footer-bottom {
+      max-width: 1100px;
+      margin: 0 auto;
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding-top: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+    .footer-social { display: flex; gap: 16px; }
+    .footer-social a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: color .2s;
+    }
+    .footer-social a:hover { color: var(--gold); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .about-grid, .steps, .benefits-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .stats-grid { grid-template-columns: 1fr; gap: 32px; }
+    }
+    @media (max-width: 600px) {
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+      nav { padding: 14px 20px; }
+      .nav-links { gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#"><span>Wolin</span>RP</a>
+  <ul class="nav-links">
+    <li><a href="#">Strona Główna</a></li>
+    <li><a href="https://discord.gg/bwrGVMjCf7" target="_blank">Discord</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="waves">
+    <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0 40 Q180 10 360 40 Q540 70 720 40 Q900 10 1080 40 Q1260 70 1440 40 L1440 80 L0 80Z" fill="rgba(26,74,110,0.35)"/>
+      <path d="M0 55 Q180 30 360 55 Q540 80 720 55 Q900 30 1080 55 Q1260 80 1440 55 L1440 80 L0 80Z" fill="rgba(10,31,60,0.5)"/>
+    </svg>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">Serwer Roleplay na Roblox</div>
+    <h1>Wolin<span>RP</span></h1>
+    <p class="hero-sub">Odkryj nadmorski Wolin – miasto na styku historii i przygody. Dołącz do naszej społeczności i przeżyj roleplay na najwyższym poziomie.</p>
+    <a href="https://discord.gg/bwrGVMjCf7" class="hero-cta" target="_blank">Dołącz teraz</a>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text">
+        <div class="section-label">O projekcie</div>
+        <h2 class="section-title">Początek</h2>
+        <div class="divider"></div>
+        <p>Prace nad projektem WolinRP rozpoczęły się z pasji do polskiego roleplayu i chęci stworzenia czegoś wyjątkowego – serwera osadzonego w klimatycznym, nadmorskim Wolinie.</p>
+        <p>Staramy się, aby rozgrywka na naszym serwerze stała na najwyższym poziomie pod względem roleplayu, skryptów oraz budownictwa. Stań się częścią naszej społeczności, a nasza przygoda stanie się jeszcze lepsza!</p>
+      </div>
+      <div class="about-img">
+        <!-- Tutaj wstawiasz ścieżkę do swojego pliku .png -->
+        <img src="images/wolin-preview.png" alt="WolinRP Preview" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO PLAY -->
+<section class="how" id="jak-zagrac">
+  <div class="container">
+    <div class="section-label">Instrukcja</div>
+    <h2 class="section-title">Jak zagrać?</h2>
+    <div class="divider"></div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-icon">💬</div>
+        <h4>Wchodzisz na naszego Discorda</h4>
+        <p>Dołącz na nasz Discord, a jak jeszcze nie masz konta – załóż je zupełnie za darmo. To zajmie tylko chwilę!</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-icon">✅</div>
+        <h4>Zweryfikuj się</h4>
+        <p>Po wejściu na Discorda przejdź przez szybką weryfikację konta. Przeczytaj wszystkie instrukcje na dedykowanych kanałach i postępuj zgodnie z nimi.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-icon">🎮</div>
+        <h4>Wbijasz i grasz!</h4>
+        <p>Po udanej weryfikacji możesz od razu wejść na serwer i bawić się razem z nami. Witamy na pokładzie!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section" id="faq">
+  <div class="container">
+    <div class="section-label">Pytania</div>
+    <h2 class="section-title">FAQ</h2>
+    <div class="divider"></div>
+    <div class="faq-grid">
+      <div class="faq-item">
+        <div class="faq-q">Kiedy WolinRP V2?</div>
+        <div class="faq-a">Nasza ekipa deweloperska dokłada wszelkich starań, aby pracować nad nową, odświeżoną wersją Wolina. Reskryptowanie całej gry od podstaw wymaga ogromnego poświęcenia i czasu.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Jak zostać członkiem administracji?</div>
+        <div class="faq-a">Aby zostać członkiem administracji należy złożyć podanie, które jest ogłaszane na naszym serwerze discord</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Jak założyć firmę?</div>
+        <div class="faq-a">Aktualnie nie ma możliwości zakładania firm na obecnej wersji gry. Funkcja ta będzie dostępna po wypuszczeniu nowej wersji WolinRP.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Jak dostać się do frakcji?</div>
+        <div class="faq-a">Aby dołączyć do jakiejkolwiek frakcji, należy napisać podanie rekrutacyjne. Ogłoszenia o rekrutacjach pojawiają się na dedykowanym kanale naszego Discorda.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BENEFITS -->
+<section class="benefits" id="korzysci">
+  <div class="container">
+    <div class="section-label">Dlaczego my?</div>
+    <h2 class="section-title">Korzyści z grania na naszym serwerze</h2>
+    <div class="divider"></div>
+    <div class="benefits-grid">
+      <div class="benefit">
+        <div class="benefit-icon">⚙️</div>
+        <h3>Zaawansowane systemy</h3>
+        <p>Wyróżniamy się na scenie polskiego community roleplay na Robloxie, posiadając zaawansowane skrypty, których inne serwery nie mają.</p>
+      </div>
+      <div class="benefit">
+        <div class="benefit-icon">🚔</div>
+        <h3>Służby</h3>
+        <p>Posiadamy różne służby z bogatymi zasobami, co znacząco przyczynia się do jakości i realizmu rozgrywki.</p>
+      </div>
+      <div class="benefit">
+        <div class="benefit-icon">🌊</div>
+        <h3>Klimat Wolina</h3>
+        <p>Wolin to wyjątkowa lokacja – nadmorski klimat, historia i unikalny charakter sprawiają, że rozgrywka jest tu jak nigdzie indziej.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="container">
+    <div class="stats-grid">
+      <div>
+        <div class="stat-num" data-target="500">30+</div>
+        <div class="stat-label">Średnio osób na serwerze</div>
+      </div>
+      <div>
+        <div class="stat-num" data-target="800">120+</div>
+        <div class="stat-label">Osób na Discordzie</div>
+      </div>
+      <div>
+        <div class="stat-num" data-target="10000">1200+</div>
+        <div class="stat-label">Visitów na Robloxie</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="nav-logo" href="#"><span>Wolin</span>RP</a>
+      <p>Serwer roleplay na Robloxie osadzony w nadmorskim klimacie Wolina. Dołącz i przeżyj wyjątkową przygodę!</p>
+    </div>
+    <div>
+      <h5>Serwisy</h5>
+      <ul>
+        <li><a href="https://www.roblox.com/games/96037467189078/Fikcyjna-Pi-a-BETA" target="_blank">Gra na Robloxie</a></li>
+        <li><a href="https://discord.gg/ByzfFkZ3b" target="_blank">Discord</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Informacje</h5>
+      <ul>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#zespol">Zespół</a></li>
+        <li><a href="#jak-zagrac">Jak zagrać?</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Social Media</h5>
+      <ul>
+        <li><a href="" target="_blank">TikTok</a></li>
+        <li><a href="" target="_blank">YouTube</a></li>
+        <li><a href="https://discord.gg/ByzfFkZ3b" target="_blank">Discord</a></li>
+      </ul>
+    </div>
+  </div>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    });
+  });
+</script>
+</body>
+</html>
