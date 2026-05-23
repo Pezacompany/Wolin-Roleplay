@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rekrutacja — Policja</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    /* =============================================
+       🔗 WEBHOOK DISCORD — ZMIEŃ NA SWÓJ
+    ============================================= */
+    /* Webhook ustawiony w JS poniżej — szukaj zmiennej WEBHOOK_URL */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-deep:    #050810;
+      --bg-mid:     #080d1a;
+      --blue-dark:  #0a1628;
+      --blue-mid:   #0d2145;
+      --blue-neon:  #1a4fff;
+      --blue-glow:  #2d6fff;
+      --blue-light: #5b8fff;
+      --accent:     #00d4ff;
+      --text:       #c8d8f0;
+      --text-dim:   #6a80a8;
+      --border:     rgba(26, 79, 255, 0.3);
+      --radius:     10px;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Exo 2', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ---- ANIMATED BG ---- */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(26,79,255,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 80% 90%, rgba(0,212,255,0.08) 0%, transparent 60%),
+        linear-gradient(160deg, #050810 0%, #080d1a 40%, #0a1225 100%);
+    }
+    body::after {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 80px, rgba(26,79,255,0.03) 80px, rgba(26,79,255,0.03) 81px),
+        repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(26,79,255,0.03) 80px, rgba(26,79,255,0.03) 81px);
+      pointer-events: none;
+    }
+
+    /* ---- PARTICLES ---- */
+    #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: var(--blue-neon);
+      animation: float linear infinite;
+      opacity: 0;
+    }
+    @keyframes float {
+      0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.3; }
+      100% { transform: translateY(-20px) scale(1); opacity: 0; }
+    }
+
+    /* ---- LOADER ---- */
+    #loader {
+      position: fixed; inset: 0; z-index: 100;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: var(--bg-deep);
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    #loader.hide { opacity: 0; visibility: hidden; }
+
+    .loader-badge {
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      border: 3px solid var(--blue-mid);
+      border-top-color: var(--blue-neon);
+      border-right-color: var(--accent);
+      animation: spin 1s linear infinite;
+      margin-bottom: 28px;
+      box-shadow: 0 0 30px rgba(26,79,255,0.4), 0 0 60px rgba(0,212,255,0.15);
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loader-logo {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 2rem; font-weight: 700;
+      letter-spacing: 6px; text-transform: uppercase;
+      color: var(--accent);
+      text-shadow: 0 0 20px rgba(0,212,255,0.6);
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    .loader-sub {
+      margin-top: 10px; font-size: .85rem;
+      color: var(--text-dim); letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    @keyframes pulse { 0%,100%{opacity:.7} 50%{opacity:1} }
+
+    /* ---- WRAPPER ---- */
+    #app {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 40px 20px;
+      opacity: 0;
+      transition: opacity 0.8s ease 0.2s;
+    }
+    #app.visible { opacity: 1; }
+
+    /* ---- HEADER ---- */
+    .header { text-align: center; margin-bottom: 44px; }
+    .badge-icon {
+      width: 72px; height: 72px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue-neon), var(--accent));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      box-shadow: 0 0 40px rgba(26,79,255,0.5), 0 0 80px rgba(0,212,255,0.2);
+      animation: glow-pulse 2.5s ease-in-out infinite;
+    }
+    @keyframes glow-pulse {
+      0%,100% { box-shadow: 0 0 40px rgba(26,79,255,0.5), 0 0 80px rgba(0,212,255,0.2); }
+      50%      { box-shadow: 0 0 60px rgba(26,79,255,0.8), 0 0 120px rgba(0,212,255,0.35); }
+    }
+    .header h1 {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
+      background: linear-gradient(90deg, #fff 0%, var(--accent) 60%, var(--blue-light) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .header p {
+      margin-top: 10px; font-size: .95rem;
+      color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase;
+    }
+    .divider {
+      width: 120px; height: 2px; margin: 16px auto 0;
+      background: linear-gradient(90deg, transparent, var(--blue-neon), var(--accent), transparent);
+    }
+
+    /* ---- CARD ---- */
+    .card {
+      width: 100%; max-width: 680px;
+      background: linear-gradient(135deg, rgba(10,22,40,0.9) 0%, rgba(8,13,26,0.95) 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 36px;
+      box-shadow:
+        0 0 0 1px rgba(26,79,255,0.1),
+        0 20px 60px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px);
+      animation: card-in 0.7s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes card-in {
+      from { opacity:0; transform: translateY(30px) scale(0.97); }
+      to   { opacity:1; transform: translateY(0) scale(1); }
+    }
+
+    /* ---- FIELDS ---- */
+    .field { margin-bottom: 24px; }
+    label {
+      display: block; margin-bottom: 8px;
+      font-size: .8rem; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--blue-light); font-weight: 600;
+    }
+    label span.req { color: var(--accent); margin-left: 3px; }
+
+    input[type=text],
+    input[type=url],
+    select,
+    textarea {
+      width: 100%; padding: 13px 16px;
+      background: rgba(5,8,16,0.8);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'Exo 2', sans-serif; font-size: .95rem;
+      outline: none;
+      transition: border-color .25s, box-shadow .25s, background .25s;
+    }
+    input[type=text]:focus,
+    input[type=url]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--blue-neon);
+      box-shadow: 0 0 0 3px rgba(26,79,255,0.15), 0 0 20px rgba(26,79,255,0.1);
+      background: rgba(10,18,35,0.9);
+    }
+    textarea { resize: vertical; min-height: 100px; }
+    select option { background: #0a1225; }
+
+    .radio-group { display: flex; gap: 12px; flex-wrap: wrap; }
+    .radio-option {
+      flex: 1; min-width: 130px;
+      padding: 12px 16px;
+      background: rgba(5,8,16,0.7);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all .2s;
+      display: flex; align-items: center; gap: 10px;
+      font-size: .9rem;
+    }
+    .radio-option:hover { border-color: var(--blue-neon); background: rgba(26,79,255,0.08); }
+    .radio-option input[type=radio] { accent-color: var(--blue-neon); width:16px; height:16px; }
+    .radio-option.selected {
+      border-color: var(--blue-neon);
+      background: rgba(26,79,255,0.12);
+      box-shadow: 0 0 12px rgba(26,79,255,0.2);
+    }
+
+    .link-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 10px; padding: 10px 18px;
+      background: rgba(26,79,255,0.1);
+      border: 1px solid rgba(26,79,255,0.4);
+      border-radius: 8px; color: var(--accent);
+      text-decoration: none; font-size: .85rem; letter-spacing: 1px;
+      transition: all .2s;
+    }
+    .link-btn:hover {
+      background: rgba(26,79,255,0.2);
+      box-shadow: 0 0 16px rgba(26,79,255,0.3);
+      transform: translateY(-1px);
+    }
+
+    /* ---- BUTTONS ---- */
+    .btn-submit {
+      width: 100%; padding: 16px;
+      margin-top: 8px;
+      background: linear-gradient(135deg, var(--blue-neon) 0%, #0055ff 50%, var(--accent) 100%);
+      background-size: 200% 200%;
+      border: none; border-radius: var(--radius);
+      color: #fff; font-family: 'Rajdhani', sans-serif;
+      font-size: 1.15rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+      cursor: pointer;
+      transition: all .3s;
+      box-shadow: 0 4px 24px rgba(26,79,255,0.4);
+      animation: gradient-shift 3s ease infinite;
+    }
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 36px rgba(26,79,255,0.6), 0 0 60px rgba(0,212,255,0.2);
+    }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    @keyframes gradient-shift {
+      0%,100% { background-position: 0% 50%; }
+      50%      { background-position: 100% 50%; }
+    }
+
+    /* ---- CONFIRM MODAL ---- */
+    .overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(5,8,16,0.85);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden;
+      transition: all .3s;
+    }
+    .overlay.show { opacity: 1; visibility: visible; }
+    .modal {
+      background: linear-gradient(135deg, #0a1628, #080d1a);
+      border: 1px solid rgba(26,79,255,0.4);
+      border-radius: 16px; padding: 36px 32px;
+      max-width: 420px; width: 90%;
+      text-align: center;
+      box-shadow: 0 0 80px rgba(26,79,255,0.3);
+      transform: scale(0.9);
+      transition: transform .3s;
+    }
+    .overlay.show .modal { transform: scale(1); }
+    .modal-icon { font-size: 3rem; margin-bottom: 16px; }
+    .modal h2 {
+      font-family: 'Rajdhani', sans-serif; font-size: 1.6rem;
+      font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      color: #fff; margin-bottom: 10px;
+    }
+    .modal p { color: var(--text-dim); font-size: .95rem; line-height: 1.6; margin-bottom: 28px; }
+    .modal-btns { display: flex; gap: 12px; }
+    .btn-confirm {
+      flex: 1; padding: 13px;
+      background: linear-gradient(135deg, var(--blue-neon), var(--accent));
+      border: none; border-radius: 8px; color: #fff;
+      font-family: 'Rajdhani', sans-serif; font-size: 1rem;
+      font-weight: 700; letter-spacing: 2px; cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-confirm:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,79,255,0.5); }
+    .btn-cancel {
+      flex: 1; padding: 13px;
+      background: transparent;
+      border: 1px solid var(--border); border-radius: 8px; color: var(--text-dim);
+      font-family: 'Rajdhani', sans-serif; font-size: 1rem;
+      font-weight: 600; letter-spacing: 2px; cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-cancel:hover { border-color: rgba(255,80,80,0.5); color: #ff5050; }
+
+    /* ---- SUCCESS ---- */
+    .success-msg {
+      display: none; text-align: center; padding: 20px 0;
+    }
+    .success-msg.show { display: block; }
+    .success-icon {
+      font-size: 4rem; margin-bottom: 16px;
+      animation: bounce-in .6s cubic-bezier(.22,1,.36,1);
+    }
+    @keyframes bounce-in {
+      0%   { transform: scale(0); }
+      70%  { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+    .success-msg h2 {
+      font-family: 'Rajdhani', sans-serif; font-size: 2rem;
+      font-weight: 700; color: var(--accent);
+      text-shadow: 0 0 20px rgba(0,212,255,0.5);
+    }
+    .success-msg p { color: var(--text-dim); margin-top: 10px; font-size: .95rem; }
+
+    /* ---- ERROR ---- */
+    .error-msg {
+      display: none; margin-top: 12px;
+      padding: 12px 16px; border-radius: 8px;
+      background: rgba(255,50,50,0.08);
+      border: 1px solid rgba(255,50,50,0.3);
+      color: #ff6b6b; font-size: .9rem;
+    }
+    .error-msg.show { display: block; }
+
+    @media (max-width: 500px) {
+      .card { padding: 28px 20px; }
+      .modal-btns { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     🔗 WEBHOOK DISCORD — WKLEJ SWÓJ LINK PONIŻEJ
+     ============================================================ -->
+<script>
+  const WEBHOOK_URL = "TWOJ_WEBHOOK_DISCORD_TUTAJ";
+</script>
+<!-- =========================================================== -->
+
+<!-- Particles -->
+<div id="particles"></div>
+
+<!-- Loader -->
+<div id="loader">
+  <div class="loader-badge"></div>
+  <div class="loader-logo">POLICJA</div>
+  <div class="loader-sub">Wczytywanie systemu rekrutacji…</div>
+</div>
+
+<!-- Confirm modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-icon">⚠️</div>
+    <h2>Potwierdź Wysłanie</h2>
+    <p>Czy na pewno chcesz wysłać podanie? Upewnij się, że wszystkie dane są poprawne. Podania nie można cofnąć.</p>
+    <div class="modal-btns">
+      <button class="btn-confirm" id="btnConfirm">TAK, WYŚLIJ</button>
+      <button class="btn-cancel" id="btnCancel">ANULUJ</button>
+    </div>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app">
+  <div class="header">
+    <div class="badge-icon">🛡️</div>
+    <h1>Rekrutacja do Policji</h1>
+    <p>System Zgłoszeń Online</p>
+    <div class="divider"></div>
+  </div>
+
+  <div class="card" id="formCard">
+
+    <!-- SUCCESS -->
+    <div class="success-msg" id="successMsg">
+      <div class="success-icon">✅</div>
+      <h2>Podanie Wysłane!</h2>
+      <p>Twoje podanie zostało pomyślnie przesłane.<br>Czekaj na odpowiedź od kadry dowódczej.</p>
+    </div>
+
+    <!-- FORM -->
+    <div id="formContent">
+
+      <!-- Nick Discord -->
+      <div class="field">
+        <label>Nick Discord <span class="req">*</span></label>
+        <input type="text" id="nickDiscord" placeholder="np. Kowalski#1234" />
+      </div>
+
+      <!-- Nick Roblox -->
+      <div class="field">
+        <label>Nick Roblox <span class="req">*</span></label>
+        <input type="text" id="nickRoblox" placeholder="np. Kowalski_PL" />
+      </div>
+
+      <!-- Doświadczenie -->
+      <div class="field">
+        <label>Czy masz doświadczenie w Służbach Mundurowych? <span class="req">*</span></label>
+        <div class="radio-group" id="doswiadczenieGroup">
+          <label class="radio-option" id="opt-tak">
+            <input type="radio" name="doswiadczenie" value="Tak" /> Tak, mam doświadczenie
+          </label>
+          <label class="radio-option" id="opt-nie">
+            <input type="radio" name="doswiadczenie" value="Nie" /> Nie, jestem nowy
+          </label>
+        </div>
+      </div>
+
+      <!-- Plusy i minusy -->
+      <div class="field">
+        <label>Twoje zalety i wady <span class="req">*</span></label>
+        <textarea id="plusyMinusy" placeholder="+ Zalety: np. aktywny, komunikatywny, odpowiedzialny&#10;- Wady: np. czasem zbyt bezpośredni"></textarea>
+      </div>
+
+      <!-- Gotowość -->
+      <div class="field">
+        <label>Czy jesteś gotowy na pełnienie służby? <span class="req">*</span></label>
+        <div class="radio-group" id="gotowoscGroup">
+          <label class="radio-option" id="opt-got-tak">
+            <input type="radio" name="gotowosc" value="Tak, jestem gotowy" /> Tak, jestem gotowy
+          </label>
+          <label class="radio-option" id="opt-got-nie">
+            <input type="radio" name="gotowosc" value="Nie, potrzebuję czasu" /> Potrzebuję czasu
+          </label>
+        </div>
+      </div>
+
+      <!-- Kwestionariusz -->
+      <div class="field">
+        <label>Kwestionariusz <span class="req">*</span></label>
+        <p style="font-size:.85rem; color:var(--text-dim); margin-bottom:10px; line-height:1.5;">
+          Wypełnij kwestionariusz pod poniższym linkiem, a następnie skopiuj i wklej link do swojej wersji poniżej.
+        </p>
+        <a class="link-btn"
+           href="https://docs.google.com/document/d/1uujIBMBGLXMoNjSF8ZTpAxFEzvKJisfhgtv49CLzW8c/edit?usp=drivesdk"
+           target="_blank" rel="noopener">
+          📄 Otwórz Kwestionariusz
+        </a>
+        <div style="margin-top:16px;">
+          <label>Link do wypełnionego kwestionariusza <span class="req">*</span></label>
+          <input type="url" id="linkKwestionariusz" placeholder="https://docs.google.com/document/d/..." />
+        </div>
+      </div>
+
+      <div class="error-msg" id="errorMsg">⚠️ Wypełnij wszystkie wymagane pola przed wysłaniem.</div>
+
+      <button class="btn-submit" id="btnSubmit">WYŚLIJ PODANIE</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ---- PARTICLES ---- */
+  (function(){
+    const container = document.getElementById('particles');
+    for(let i = 0; i < 30; i++){
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const size = Math.random() * 3 + 1;
+      p.style.cssText = `
+        width:${size}px; height:${size}px;
+        left:${Math.random()*100}%;
+        animation-duration:${Math.random()*15+8}s;
+        animation-delay:${Math.random()*10}s;
+        opacity:${Math.random()*0.4+0.1};
+      `;
+      container.appendChild(p);
+    }
+  })();
+
+  /* ---- LOADER (3 sek) ---- */
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('loader').classList.add('hide');
+      document.getElementById('app').classList.add('visible');
+    }, 3000);
+  });
+
+  /* ---- RADIO STYLES ---- */
+  document.querySelectorAll('.radio-option input[type=radio]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      document.querySelectorAll(`[name="${radio.name}"]`).forEach(r => {
+        r.closest('.radio-option').classList.remove('selected');
+      });
+      radio.closest('.radio-option').classList.add('selected');
+    });
+  });
+
+  /* ---- SUBMIT ---- */
+  document.getElementById('btnSubmit').addEventListener('click', () => {
+    if(!validate()) return;
+    document.getElementById('overlay').classList.add('show');
+  });
+
+  document.getElementById('btnCancel').addEventListener('click', () => {
+    document.getElementById('overlay').classList.remove('show');
+  });
+
+  document.getElementById('btnConfirm').addEventListener('click', async () => {
+    document.getElementById('overlay').classList.remove('show');
+    await sendWebhook();
+  });
+
+  function validate(){
+    const fields = [
+      document.getElementById('nickDiscord').value.trim(),
+      document.getElementById('nickRoblox').value.trim(),
+      document.querySelector('input[name="doswiadczenie"]:checked'),
+      document.getElementById('plusyMinusy').value.trim(),
+      document.querySelector('input[name="gotowosc"]:checked'),
+      document.getElementById('linkKwestionariusz').value.trim(),
+    ];
+    const ok = fields.every(f => f);
+    document.getElementById('errorMsg').classList.toggle('show', !ok);
+    return ok;
+  }
+
+  async function sendWebhook(){
+    const btn = document.getElementById('btnSubmit');
+    btn.disabled = true;
+    btn.textContent = 'WYSYŁANIE…';
+
+    const nickDiscord      = document.getElementById('nickDiscord').value.trim();
+    const nickRoblox       = document.getElementById('nickRoblox').value.trim();
+    const doswiadczenie    = document.querySelector('input[name="doswiadczenie"]:checked').value;
+    const plusyMinusy      = document.getElementById('plusyMinusy').value.trim();
+    const gotowosc         = document.querySelector('input[name="gotowosc"]:checked').value;
+    const linkKwestionariusz = document.getElementById('linkKwestionariusz').value.trim();
+
+    const payload = {
+      username: "System Rekrutacji | Policja",
+      avatar_url: "https://i.imgur.com/AfFp7pu.png",
+      embeds: [{
+        title: "🛡️ Nowe Podanie do Policji",
+        color: 0x1a4fff,
+        fields: [
+          { name: "👤 Nick Discord",        value: nickDiscord,        inline: true },
+          { name: "🎮 Nick Roblox",         value: nickRoblox,         inline: true },
+          { name: "🏅 Doświadczenie",       value: doswiadczenie,      inline: false },
+          { name: "✅ Gotowość do służby",  value: gotowosc,           inline: false },
+          { name: "📝 Zalety i wady",       value: plusyMinusy,        inline: false },
+          { name: "🔗 Link kwestionariusza", value: linkKwestionariusz, inline: false },
+        ],
+        footer: { text: "System Rekrutacji Online • Policja" },
+        timestamp: new Date().toISOString()
+      }]
+    };
+
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if(res.ok || res.status === 204){
+        document.getElementById('formContent').style.display = 'none';
+        document.getElementById('successMsg').classList.add('show');
+      } else {
+        throw new Error('HTTP ' + res.status);
+      }
+    } catch(e) {
+      btn.disabled = false;
+      btn.textContent = 'WYŚLIJ PODANIE';
+      document.getElementById('errorMsg').textContent = '❌ Błąd wysyłania. Sprawdź link webhooka i spróbuj ponownie.';
+      document.getElementById('errorMsg').classList.add('show');
+    }
+  }
+</script>
+</body>
+</html>
